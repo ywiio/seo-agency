@@ -1,0 +1,13 @@
+{
+  "client": "example-client",
+  "domain": "https://example.com",
+  "goals": ["рост органического трафика", "вывод услуговых страниц в топ-10"],
+  "priority_sections": ["/services/", "/cases/"],
+  "credentials": {
+    "gsc_property": "ЗАПОЛНИТЬ: sc-domain:example.com или https://example.com/",
+    "note": "Реальные ключи и токены НЕ коммитим. Храните в .env / секретах."
+  },
+  "audit": {
+    "max_pages": 100
+  }
+}

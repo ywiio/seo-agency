@@ -1,0 +1,8 @@
+.env
+*.key
+__pycache__/
+*.pyc
+# результаты аудитов не тащим в git
+.claude/skills/*/result/*
+projects/*/data/*
+!.gitkeep
