@@ -1,6 +1,3 @@
-# seo-agency
-Это репозиторий AI-first SEO-агентства. Архитектура: skills → projects → agent → data.
-
 # SEO-агентство — правила для агента
 
 Это репозиторий AI-first SEO-агентства. Архитектура: skills → projects → agent → data.
