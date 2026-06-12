@@ -1,6 +1,6 @@
 {
-  "client": "example-client",
-  "domain": "https://example.com",
+  "client": "komfot3.by",
+  "domain": "https://komfot3.by/",
   "goals": ["рост органического трафика", "вывод услуговых страниц в топ-10"],
   "priority_sections": ["/services/", "/cases/"],
   "credentials": {

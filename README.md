@@ -13,10 +13,14 @@ seo-agency/
 ├── requirements.txt
 ├── .claude/
 │   └── skills/
-│       └── technical-audit/        ← рабочий скилл
-│           ├── SKILL.md            ← инструкция для агента
-│           ├── scripts/run_audit.py← краулер (вся тяжёлая работа здесь)
-│           └── result/             ← сюда падают отчёты
+│       ├── technical-audit/        ← рабочий скилл
+│       │   ├── SKILL.md            ← инструкция для агента
+│       │   ├── scripts/run_audit.py← краулер (вся тяжёлая работа здесь)
+│       │   └── result/             ← сюда падают отчёты
+│       └── h1-optimizer/           ← рабочий скилл: проработка H1 под ключи
+│           ├── SKILL.md            ← 10/10 промпт по H1 + самопроверка
+│           ├── scripts/prepare_h1.py ← анализ страницы + ключи из Google Sheets
+│           └── result/
 ├── projects/
 │   └── example-client/
 │       ├── config.json             ← домен, цели, доступы клиента
@@ -61,6 +65,28 @@ python run_audit.py https://site.ru --max-pages 100 --out ../result
 Что проверяется по каждой странице: код ответа и редиректы, индексируемость
 (noindex), title, meta description, H1, canonical, объём текста, alt у
 картинок, время ответа, внутренние/внешние ссылки.
+
+## Скилл `h1-optimizer` — проработка H1 под ключи из Google Sheets
+
+> Проработай H1 для https://site.ru/uslugi/seo, ключи в этой таблице:
+> https://docs.google.com/spreadsheets/d/.../edit#gid=0
+
+Агент: запустит `prepare_h1.py` (он проанализирует страницу и подтянет ключи
+из таблицы) → прочитает `result/h1_input.json` → определит тему и интент,
+выберет главный ключ → даст 3–5 вариантов H1, прогонит их через встроенную
+самопроверку и порекомендует один → положит отчёт в `result/h1-report.md`.
+
+Источник ключей гибкий: публичная Google-таблица («всем по ссылке»),
+приватная (через сервис-аккаунт `gspread`) или локальный `.csv`. Колонки с
+ключом/частотностью/URL определяются по заголовкам автоматически (рус/англ).
+Вручную:
+
+```bash
+cd .claude/skills/h1-optimizer/scripts
+python prepare_h1.py https://site.ru/uslugi/seo \
+    --sheet "https://docs.google.com/spreadsheets/d/<ID>/edit#gid=0" \
+    --top 15 --out ../result
+```
 
 ## Принцип оркестрации (главное из доклада)
 
