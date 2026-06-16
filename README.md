@@ -21,6 +21,11 @@ seo-agency/
 │           ├── SKILL.md            ← 10/10 промпт по H1 + самопроверка
 │           ├── scripts/prepare_h1.py ← анализ страницы + ключи из Google Sheets
 │           └── result/
+│       └── blog-content/           ← рабочий скилл: темы для блога + статья
+│           ├── SKILL.md            ← 3 фазы: темы → пробелы → статья
+│           ├── scripts/analyze_blog.py      ← инвентаризация статей блога
+│           ├── scripts/keywords_to_topics.py← Вордстат+Google → темы + gap-анализ
+│           └── result/
 ├── projects/
 │   └── example-client/
 │       ├── config.json             ← домен, цели, доступы клиента
@@ -87,6 +92,29 @@ python prepare_h1.py https://site.ru/uslugi/seo \
     --sheet "https://docs.google.com/spreadsheets/d/<ID>/edit#gid=0" \
     --top 15 --out ../result
 ```
+
+## Скилл `blog-content` — темы для блога + написание статьи
+
+> Собери контент-план для блога https://site.ru/blog/, ключи в этих выгрузках:
+> wordstat.csv и google_kw.csv. Потом напиши статью под топовую тему-пробел.
+
+Три фазы: (1) `analyze_blog.py` инвентаризирует существующие статьи; (2)
+`keywords_to_topics.py` сливает выгрузки из Вордстат и Google Keyword Planner,
+кластеризует в темы по спросу и помечает `gap` / `partial` / `covered`
+относительно блога; (3) агент выбирает темы и пишет статью по встроенному
+брифу с самопроверкой. Источники ключей — CSV, папка с CSV или Google Sheets
+(Вордстат и Google форматы частотности понимаются оба, включая диапазоны вида
+«1 тыс. – 10 тыс.»).
+
+```bash
+cd .claude/skills/blog-content/scripts
+python analyze_blog.py https://site.ru/blog/ --max-pages 200 --out ../result
+python keywords_to_topics.py --keywords wordstat.csv google_kw.csv \
+    --blog ../result/blog_inventory.json --top 40 --out ../result
+```
+
+Опционально `pip install pymorphy3` заметно улучшает кластеризацию русских
+ключей (склеивает словоформы: кофемашину/кофемашиной → одна тема).
 
 ## Принцип оркестрации (главное из доклада)
 
