@@ -1,0 +1,44 @@
+{
+  "topic": "клининг",
+  "total_volume": 10868,
+  "keyword_count": 22,
+  "sample_keywords": [
+    {
+      "keyword": "клининг",
+      "volume": 6269
+    },
+    {
+      "keyword": "клининг минск",
+      "volume": 1518
+    },
+    {
+      "keyword": "клининг цены",
+      "volume": 793
+    },
+    {
+      "keyword": "услуги клининга",
+      "volume": 535
+    },
+    {
+      "keyword": "клининг уборка",
+      "volume": 391
+    },
+    {
+      "keyword": "клининг минск цены",
+      "volume": 361
+    },
+    {
+      "keyword": "клининг цены на услуги",
+      "volume": 309
+    },
+    {
+      "keyword": "уборка минск клининг",
+      "volume": 133
+    }
+  ],
+  "coverage": {
+    "status": "gap",
+    "article": null,
+    "overlap": 0.0
+  }
+}
