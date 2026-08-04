@@ -26,6 +26,9 @@ seo-agency/
 │           ├── scripts/analyze_blog.py      ← инвентаризация статей блога
 │           ├── scripts/keywords_to_topics.py← Вордстат+Google → темы + gap-анализ
 │           └── result/
+│       └── wordpress-publisher/    ← черновики страниц через WordPress REST API
+│           ├── SKILL.md
+│           └── scripts/
 ├── projects/
 │   └── example-client/
 │       ├── config.json             ← домен, цели, доступы клиента
@@ -146,6 +149,32 @@ python keywords_to_topics.py --keywords wordstat.csv google_kw.csv \
 
 Не стройте оркестратор сразу. Сначала 3–5 рабочих скиллов — потом мозг
 поверх них.
+
+## Скилл `wordpress-publisher` — черновики в WordPress
+
+Скилл проверяет подключение, создаёт или обновляет только черновики страниц и
+загружает изображения в медиатеку через стандартный WordPress REST API.
+Настройки сайта и названия переменных окружения лежат в
+`projects/<client>/config.json`; реальные доступы — только в локальном `.env`:
+
+```env
+KOMFORT3_WP_USERNAME=claude_api
+KOMFORT3_WP_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx
+```
+
+Проверка подключения без записи:
+
+```bash
+python .claude/skills/wordpress-publisher/scripts/test_connection.py \
+  --config projects/komfort3.by/config.json
+```
+
+Создание черновика из JSON:
+
+```bash
+python .claude/skills/wordpress-publisher/scripts/create_draft.py \
+  --config projects/komfort3.by/config.json --input page.json
+```
 
 ## Безопасность
 

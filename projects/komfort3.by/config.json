@@ -60,8 +60,8 @@
 
   "keyword_sources": {
     "note": "Бесплатного API у Вордстата и Google KP нет — это выгрузки, которые кладёте сюда вручную (или ссылка на Google Sheets).",
-    "wordstat_export": "projects/komfort3-by/data/wordstat.csv",
-    "google_kp_export": "projects/komfort3-by/data/google_kw.csv",
+    "wordstat_export": "projects/komfort3.by/data/wordstat.csv",
+    "google_kp_export": "projects/komfort3.by/data/google_kw.csv",
     "google_sheet_url": "https://docs.google.com/spreadsheets/d/1FA5tr4EfcdHkeNVJNWoTyzALBt_znPDKV8tDqr1mipk/edit?usp=drive_web&ouid=109465353588441851037"
   },
 
@@ -90,6 +90,7 @@
     "api_url": "https://test.komfort3.by/wp-json/wp/v2",
     "username_env": "KOMFORT3_WP_USERNAME",
     "password_env": "KOMFORT3_WP_APP_PASSWORD",
-    "default_status": "draft"
+    "default_status": "draft",
+    "note": "Только тестовый сайт. Реальные значения переменных хранятся локально в .env и не коммитятся."
   }
 }
