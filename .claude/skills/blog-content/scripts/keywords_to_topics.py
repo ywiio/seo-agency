@@ -46,7 +46,7 @@ TIMEOUT = 20
 
 KEYWORD_HEADERS = ["keyword", "keywords", "ключ", "ключи", "ключевое слово",
                    "ключевые слова", "запрос", "запросы", "фраза", "фразы",
-                   "phrase", "query", "kw"]
+                   "phrase", "query", "kw", "name"]
 VOLUME_HEADERS = ["volume", "частотность", "частота", "показов в месяц",
                   "показы", "wordstat", "ws", "avg. monthly searches",
                   "avg monthly searches", "среднее число запросов в месяц",
@@ -279,15 +279,22 @@ def cluster_topics(keywords, sim):
 def coverage(cluster, blog_articles):
     if not blog_articles:
         return {"status": "unknown", "article": None, "overlap": 0.0}
-    best_art, best_j = None, 0.0
+    core = cluster["core"]
+    if not core:
+        return {"status": "unknown", "article": None, "overlap": 0.0}
+    # Доля токенов темы, покрытых статьёй, а не Jaccard: core (1-3 слова)
+    # против словаря статьи (топ-25 терминов) — их объединение почти всегда
+    # огромное относительно core, и обычный Jaccard занижает почти до нуля.
+    best_art, best_score = None, 0.0
     for art in blog_articles:
-        j = jaccard(cluster["core"], set(art.get("tokens", [])))
-        if j > best_j:
-            best_j, best_art = j, art
-    status = "covered" if best_j >= 0.5 else "partial" if best_j >= 0.2 else "gap"
+        art_tokens = set(art.get("tokens", []))
+        score = len(core & art_tokens) / len(core)
+        if score > best_score:
+            best_score, best_art = score, art
+    status = "covered" if best_score >= 0.75 else "partial" if best_score >= 0.4 else "gap"
     return {"status": status,
             "article": best_art.get("url") if best_art else None,
-            "overlap": round(best_j, 3)}
+            "overlap": round(best_score, 3)}
 
 
 # ───────────────────────── main ─────────────────────────
