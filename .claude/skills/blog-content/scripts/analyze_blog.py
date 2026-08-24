@@ -84,11 +84,13 @@ def crawl(start, max_pages, delay):
     session.headers.update({"User-Agent": USER_AGENT})
 
     seen = {normalize(start)}
-    queue = deque([normalize(start)])
+    queue = deque([(normalize(start), True)])  # (url, is_hub)
     articles, diag = [], {"crawled": 0, "skipped_nonarticle": 0}
+    NON_ARTICLE_SEGMENTS = ("/tag/", "/author/", "/page/", "/search/",
+                             "/wp-json/", "/feed/", "/wp-admin/")
 
     while queue and len(articles) < max_pages:
-        url = queue.popleft()
+        url, is_hub = queue.popleft()
         try:
             r = session.get(url, timeout=TIMEOUT, allow_redirects=True)
             diag["crawled"] += 1
@@ -96,18 +98,28 @@ def crawl(start, max_pages, delay):
                 continue
             soup = BeautifulSoup(r.text, "html.parser")
 
-            # собрать ссылки для обхода (только внутри раздела блога)
-            for a in soup.find_all("a", href=True):
-                href = normalize(urljoin(url, a["href"]))
-                if (href.startswith("http") and same_domain(href, root)
-                        and base_path in urlparse(href).path and href not in seen):
-                    seen.add(href)
-                    queue.append(href)
+            # На страницах раздела блога (hub) разрешаем один переход наружу —
+            # там лежат ссылки на сами статьи, а не только под /category/blog/.
+            # За пределами hub дальше не расходимся, чтобы не обойти весь сайт.
+            # Ссылки из шапки/меню/подвала не считаем — они ведут на сервисные
+            # страницы сайта, а не на статьи, и есть на любой странице.
+            if is_hub:
+                content = BeautifulSoup(r.text, "html.parser")
+                for t in content(["nav", "header", "footer"]):
+                    t.decompose()
+                for a in content.find_all("a", href=True):
+                    href = normalize(urljoin(url, a["href"]))
+                    path = urlparse(href).path
+                    if (href.startswith("http") and same_domain(href, root)
+                            and href not in seen
+                            and not any(seg in path for seg in NON_ARTICLE_SEGMENTS)):
+                        seen.add(href)
+                        queue.append((href, base_path in path))
 
             h1 = soup.find("h1")
             terms, wc = page_terms(BeautifulSoup(r.text, "html.parser"))
-            # эвристика «это статья»: есть H1 и достаточно текста
-            if not h1 or wc < 200:
+            # эвристика «это статья»: не листинг блога, есть H1 и достаточно текста
+            if is_hub or not h1 or wc < 200:
                 diag["skipped_nonarticle"] += 1
                 continue
             title = soup.title.string.strip() if soup.title and soup.title.string else None

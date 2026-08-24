@@ -45,6 +45,7 @@ python scripts/analyze_blog.py <URL_РАЗДЕЛА_БЛОГА> --max-pages 200 -
 python scripts/keywords_to_topics.py \
     --keywords wordstat.csv google_kw.csv \
     --blog result/blog_inventory.json \
+    --positions positions.csv \
     --top 40 --out result
 ```
 `--keywords` принимает несколько файлов, папку с CSV или ссылки на Google
